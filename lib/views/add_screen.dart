@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,7 @@ class AddScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const String appTittle = 'NotesHelper';
+    bool isSave = false;
     final TextEditingController textEditingTitleController =
         TextEditingController();
     final TextEditingController textEditingDecController =
@@ -21,6 +23,7 @@ class AddScreen extends StatelessWidget {
     final String? args = ModalRoute.of(context)!.settings.arguments as String?;
 
     if (args?.isNotEmpty ?? false) {
+      isSave = true;
       textEditingTitleController.text =
           context.read<NotesOperations>().fetchNotes(args).tittle;
       textEditingDecController.text =
@@ -49,13 +52,22 @@ class AddScreen extends StatelessWidget {
             TextButton(
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.white)),
-              onPressed: () {
-                context.read<NotesOperations>().addNewNote(
-                    textEditingTitleController.text,
-                    textEditingDecController.text);
-                Navigator.pop(context);
-              },
-              child: const Text('Add Note'),
+              onPressed: isSave
+                  ? () {
+                      context.read<NotesOperations>().saveNote(
+                          textEditingTitleController.text,
+                          textEditingDecController.text,
+                          id: args);
+                      Navigator.pop(context);
+                      isSave = false;
+                    }
+                  : () {
+                      context.read<NotesOperations>().addNewNote(
+                          textEditingTitleController.text,
+                          textEditingDecController.text);
+                      Navigator.pop(context);
+                    },
+              child: isSave ? const Text('Save') : const Text('Add Note'),
             ),
           ],
         ),

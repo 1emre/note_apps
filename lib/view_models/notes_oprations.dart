@@ -12,7 +12,7 @@ class NotesOperations extends ChangeNotifier {
     addNewNote('First Note', 'First Note Description');
   }
 
-  void addNewNote(String tittle, String description) {
+  void addNewNote(String tittle, String description, {String? id}) {
     Note note = Note(
         tittle: tittle,
         description: description,
@@ -23,5 +23,13 @@ class NotesOperations extends ChangeNotifier {
 
   Note fetchNotes(String? id) {
     return _notes.firstWhere((element) => element.key == id);
+  }
+
+  void saveNote(String tittle, String description, {String? id}) {
+    Note selectedNote = _notes.firstWhere((element) => element.key == id);
+
+    selectedNote.description = description;
+    selectedNote.tittle = tittle;
+    notifyListeners();
   }
 }
