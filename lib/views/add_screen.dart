@@ -13,6 +13,7 @@ class AddScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
     const String appTittle = 'NotesHelper';
     bool isSave = false;
     final TextEditingController textEditingTitleController =
@@ -35,6 +36,7 @@ class AddScreen extends StatelessWidget {
         title: const Text(appTittle),
       ),
       body: Form(
+        key: formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -45,27 +47,39 @@ class AddScreen extends StatelessWidget {
             ),
             Expanded(
               child: CustomCard(
+                minLines: 10,
                 title: 'Enter Description',
                 controller: textEditingDecController,
               ),
             ),
+            const Spacer(),
             TextButton(
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.white)),
               onPressed: isSave
                   ? () {
-                      context.read<NotesOperations>().saveNote(
-                          textEditingTitleController.text,
-                          textEditingDecController.text,
-                          id: args);
-                      Navigator.pop(context);
-                      isSave = false;
+                      if (formKey.currentState!.validate()) {
+                        context.read<NotesOperations>().saveNote(
+                            textEditingTitleController.text,
+                            textEditingDecController.text,
+                            id: args);
+                        Navigator.pop(context);
+                        isSave = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                      }
                     }
                   : () {
-                      context.read<NotesOperations>().addNewNote(
-                          textEditingTitleController.text,
-                          textEditingDecController.text);
-                      Navigator.pop(context);
+                      if (formKey.currentState!.validate()) {
+                        context.read<NotesOperations>().addNewNote(
+                            textEditingTitleController.text,
+                            textEditingDecController.text);
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                      }
                     },
               child: isSave ? const Text('Save') : const Text('Add Note'),
             ),
@@ -77,6 +91,7 @@ class AddScreen extends StatelessWidget {
 }
 
 class CustomCard extends StatelessWidget {
+  final int? minLines;
   final String title;
   final FontWeight? fontWeight;
   final TextEditingController controller;
@@ -85,6 +100,7 @@ class CustomCard extends StatelessWidget {
     required this.title,
     this.fontWeight,
     required this.controller,
+    this.minLines,
   }) : super(key: key);
 
   @override
@@ -93,7 +109,16 @@ class CustomCard extends StatelessWidget {
       child: Padding(
         padding: const PagePadding.all(),
         child: TextFormField(
+          minLines: minLines,
+          maxLines: null, // allow user to enter 5 line in textfield
+          keyboardType: TextInputType.multiline,
           controller: controller,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter some text';
+            }
+            return null;
+          },
           onChanged: (value) {
             controller.text = value;
             controller.selection = TextSelection.fromPosition(
