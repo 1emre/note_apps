@@ -20,6 +20,13 @@ class AddScreen extends StatelessWidget {
 
     final String? args = ModalRoute.of(context)!.settings.arguments as String?;
 
+    if (args?.isNotEmpty ?? false) {
+      textEditingTitleController.text =
+          context.read<NotesOperations>().fetchNotes(args).tittle;
+      textEditingDecController.text =
+          context.read<NotesOperations>().fetchNotes(args).description;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(appTittle),
@@ -29,20 +36,13 @@ class AddScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             CustomCard(
-              title: (args?.isNotEmpty ?? false)
-                  ? context.read<NotesOperations>().fetchNotes(args).tittle
-                  : 'Enter Title',
+              title: 'Enter Title',
               fontWeight: FontWeight.bold,
               controller: textEditingTitleController,
             ),
             Expanded(
               child: CustomCard(
-                title: (args?.isNotEmpty ?? false)
-                    ? context
-                        .read<NotesOperations>()
-                        .fetchNotes(args)
-                        .description
-                    : 'Enter Description',
+                title: 'Enter Description',
                 controller: textEditingDecController,
               ),
             ),
