@@ -16,16 +16,20 @@ class NotesCard extends StatelessWidget {
         //context.read<NotesOperations>().fetchNotes(note.key);
         Navigator.pushNamed(context, '/addScreen', arguments: note.key);
       }),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        elevation: 10,
-        child: ListTile(
-          title: Text(
-            note.tittle,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.2,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 10,
+          child: ListTile(
+            title: Text(
+              note.tittle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(note.description,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
-          subtitle: Text(note.description,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
       ),
     );

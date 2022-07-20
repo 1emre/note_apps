@@ -66,7 +66,8 @@ class AddScreen extends StatelessWidget {
                         Navigator.pop(context);
                         isSave = false;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
+                          const SnackBar(
+                              content: Text('Note successfully edited.')),
                         );
                       }
                     }
@@ -77,7 +78,7 @@ class AddScreen extends StatelessWidget {
                             textEditingDecController.text);
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
+                          const SnackBar(content: Text('Note added.')),
                         );
                       }
                     },
